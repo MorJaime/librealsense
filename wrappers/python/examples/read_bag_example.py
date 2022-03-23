@@ -13,12 +13,16 @@ import cv2
 import argparse
 # Import os.path for file path manipulation
 import os.path
+import datetime
+import time
+from PIL import Image
 
 # Create object for parsing command-line options
 parser = argparse.ArgumentParser(description="Read recorded bag file and display depth stream in jet colormap.\
                                 Remember to change the stream fps and format to match the recorded.")
 # Add argument which takes path to a bag file as an input
 parser.add_argument("-i", "--input", type=str, help="Path to the bag file")
+parser.add_argument("-o", "--output", type=str, help="Path to the save frames")
 # Parse the command line arguments to an object
 args = parser.parse_args()
 # Safety if no parameter have been given
@@ -43,16 +47,20 @@ try:
 
     # Configure the pipeline to stream the depth stream
     # Change this parameters according to the recorded bag file resolution
-    config.enable_stream(rs.stream.depth, rs.format.z16, 30)
+    config.enable_stream(rs.stream.depth)
+    config.enable_stream(rs.stream.color)
 
     # Start streaming from file
     pipeline.start(config)
 
     # Create opencv window to render image in
-    cv2.namedWindow("Depth Stream", cv2.WINDOW_AUTOSIZE)
+    #cv2.namedWindow("Depth Stream", cv2.WINDOW_AUTOSIZE)
     
     # Create colorizer object
     colorizer = rs.colorizer()
+
+    output_path = str(args.output)
+    print('output_path',output_path)
 
     # Streaming loop
     while True:
@@ -62,18 +70,42 @@ try:
         # Get depth frame
         depth_frame = frames.get_depth_frame()
 
+        color_frame = frames.get_color_frame()
+
         # Colorize depth frame to jet colormap
         depth_color_frame = colorizer.colorize(depth_frame)
 
         # Convert depth_frame to numpy array to render image in opencv
         depth_color_image = np.asanyarray(depth_color_frame.get_data())
+        color_frame_image = np.asanyarray(color_frame.get_data())
+
+        frame_timestamp = frames.get_timestamp()
+        frame_tt = frame_timestamp / 1000
+        frame_datetime = datetime.datetime.fromtimestamp(frame_tt)
+
+        #print(frame_datetime)
+        #im = Image.fromarray(color_frame_image)
+
+        f_datetime = str(frame_datetime)
+        f_datetime = f_datetime.replace('.','_')
+        f_datetime = f_datetime.replace(' ','_')
+        f_datetime = f_datetime.replace('-','')
+        f_datetime = f_datetime.replace(':','')
+        
+        color_save_path = os.path.join(output_path,f_datetime+'_color.jpeg')
+        #depth_save_path = os.path.join(output_path,f_datetime+'_depth.jpeg')
+        #print(color_save_path)
+        #im.save(r'G:\JaimeMorales\Codes\openlogi\RealSense\filename.jpeg')
+
+        #cv2.imwrite(depth_save_path, depth_color_image)
+        cv2.imwrite(color_save_path, color_frame_image)
 
         # Render image in opencv window
-        cv2.imshow("Depth Stream", depth_color_image)
+        #cv2.imshow("Depth Stream", depth_color_image)
         key = cv2.waitKey(1)
         # if pressed escape exit program
         if key == 27:
-            cv2.destroyAllWindows()
+            #cv2.destroyAllWindows()
             break
 
 finally:
