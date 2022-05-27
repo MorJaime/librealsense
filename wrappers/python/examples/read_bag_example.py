@@ -92,12 +92,12 @@ try:
         f_datetime = f_datetime.replace('-','')
         f_datetime = f_datetime.replace(':','')
         
-        color_save_path = os.path.join(output_path,f_datetime+'_color.jpeg')
-        #depth_save_path = os.path.join(output_path,f_datetime+'_depth.jpeg')
-        #print(color_save_path)
+        color_save_path = os.path.join(output_path,'color',f_datetime+'_color.jpeg')
+        depth_save_path = os.path.join(output_path,'depth',f_datetime+'_depth.jpeg')
+        print(color_save_path)
         #im.save(r'G:\JaimeMorales\Codes\openlogi\RealSense\filename.jpeg')
 
-        #cv2.imwrite(depth_save_path, depth_color_image)
+        cv2.imwrite(depth_save_path, depth_color_image)
         cv2.imwrite(color_save_path, color_frame_image)
 
         # Render image in opencv window
