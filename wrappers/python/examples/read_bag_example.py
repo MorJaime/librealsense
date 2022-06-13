@@ -2,6 +2,7 @@
 ##               Read bag from file                ##
 #####################################################
 
+#Last Update 13/6/2022
 
 # First import library
 import pyrealsense2 as rs
@@ -15,7 +16,7 @@ import argparse
 import os.path
 import datetime
 import time
-from PIL import Image
+#from PIL import Image
 
 # Create object for parsing command-line options
 parser = argparse.ArgumentParser(description="Read recorded bag file and display depth stream in jet colormap.\
@@ -92,8 +93,8 @@ try:
         f_datetime = f_datetime.replace('-','')
         f_datetime = f_datetime.replace(':','')
         
-        color_save_path = os.path.join(output_path,'color',f_datetime+'_color.jpeg')
-        depth_save_path = os.path.join(output_path,'depth',f_datetime+'_depth.jpeg')
+        color_save_path = os.path.join(output_path,'RS-02__COLOR',f_datetime+'_color.jpeg')
+        depth_save_path = os.path.join(output_path,'RS-02__DEPTH',f_datetime+'_depth.jpeg')
         print(color_save_path)
         #im.save(r'G:\JaimeMorales\Codes\openlogi\RealSense\filename.jpeg')
 
