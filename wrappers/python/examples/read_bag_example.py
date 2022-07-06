@@ -80,6 +80,9 @@ try:
         depth_color_image = np.asanyarray(depth_color_frame.get_data())
         color_frame_image = np.asanyarray(color_frame.get_data())
 
+        r, g, b = cv2.split(color_frame_image)
+        color_frame_image = cv2.merge((b, g, r))
+
         frame_timestamp = frames.get_timestamp()
         frame_tt = frame_timestamp / 1000
         frame_datetime = datetime.datetime.fromtimestamp(frame_tt)
